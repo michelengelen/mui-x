@@ -1,13 +1,5 @@
-import * as React from 'react';
-import { RootEditor } from './editor';
+export * from './editor';
+export * from './editorContext';
 
-function Editor() {
-  const [mount, setMount] = React.useState<HTMLDivElement | null>(null);
-  return (
-    <RootEditor mount={mount}>
-      <div ref={setMount} />
-    </RootEditor>
-  );
-}
-
-export { Editor };
+// re-export prosemirror packages for use in implementations
+export * from 'prosemirror-commands';
