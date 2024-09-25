@@ -306,6 +306,7 @@ module.exports = {
     ...buildPackageRestrictedImports('@mui/x-data-grid-generator', 'x-data-grid-generator'),
     ...buildPackageRestrictedImports('@mui/x-date-pickers', 'x-date-pickers', false),
     ...buildPackageRestrictedImports('@mui/x-date-pickers-pro', 'x-date-pickers-pro', false),
+    ...buildPackageRestrictedImports('@mui/x-editor', 'x-editor', false),
     ...buildPackageRestrictedImports('@mui/x-tree-view', 'x-tree-view', false),
     ...buildPackageRestrictedImports('@mui/x-tree-view-pro', 'x-tree-view-pro', false),
     ...buildPackageRestrictedImports('@mui/x-license', 'x-license'),

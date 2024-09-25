@@ -9,7 +9,7 @@ Here we will discuss how the code is structured, to simplify codebase navigation
 
 In folder `packages` you will find one subfolder per exported package (`@mui/x-data-grid`, `@mui/x-data-grid-pro`, ...)
 
-Since `@mui/x-data-grid-pro` is an extension of `@mui/x-data-grid`, it imports all the common features from `@mui/x-data-grid` and the internal logic are imported from `@mui/x-data-grid/internals` which is defined in `x-data-grid/src/internals/index.ts`. And `@mui/x-data-grid-premium` is a further extension of `@mui/x-data-grid-pro`, it imports all the common features from both `@mui/x-data-grid` and `@mui/x-data-grid-pro` and adds some new features on top of that.
+Since `@mui/x-data-grid-pro` is an extension of `@mui/x-data-grid`, it imports all the common features from `@mui/x-data-grid` and the internal logic are imported from `@mui/x-data-grid/internals` which is defined in `x-data-grid/src/internals/index.tsx`. And `@mui/x-data-grid-premium` is a further extension of `@mui/x-data-grid-pro`, it imports all the common features from both `@mui/x-data-grid` and `@mui/x-data-grid-pro` and adds some new features on top of that.
 
 In each package, the most used folders are:
 

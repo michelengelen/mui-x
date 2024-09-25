@@ -14,6 +14,7 @@ module.exports = {
       '@mui/x-data-grid-premium': path.resolve(__dirname, './packages/x-data-grid-premium/src'),
       '@mui/x-date-pickers': path.resolve(__dirname, './packages/x-date-pickers/src'),
       '@mui/x-date-pickers-pro': path.resolve(__dirname, './packages/x-date-pickers-pro/src'),
+      '@mui/x-editor': path.resolve(__dirname, './packages /x-editor/src'),
       '@mui/x-charts': path.resolve(__dirname, './packages/x-charts/src'),
       '@mui/x-charts-pro': path.resolve(__dirname, './packages/x-charts-pro/src'),
       '@mui/x-charts-vendor': path.resolve(__dirname, './packages/x-charts-vendor'),

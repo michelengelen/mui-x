@@ -2676,7 +2676,7 @@ A big thanks to the 3 contributors who made this release possible. Here are some
 - [core] Drop `useGridContainerProps` (#3007) @flaviendelangle
 - [core] Move `getRowIdFromRowIndex` and `getRowIndex` to the sorting API (#3126) @flaviendelangle
 - [core] Polish v5 CHANGELOG (#3194) @oliviertassinari
-- [core] Remove the `index.ts` of the export hooks (#3165) @flaviendelangle
+- [core] Remove the `index.tsx` of the export hooks (#3165) @flaviendelangle
 - [core] Set the correct release date for v5.0.0 in the CHANGELOG.md (#3192) @flaviendelangle
 
 ## 5.0.0
