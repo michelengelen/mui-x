@@ -6,6 +6,7 @@ import Divider from '@mui/material/Divider';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
+import StrikethroughSIcon from '@mui/icons-material/StrikethroughS';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
@@ -16,7 +17,27 @@ import CodeIcon from '@mui/icons-material/Code';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import LinkIcon from '@mui/icons-material/Link';
 import ImageIcon from '@mui/icons-material/Image';
-import { EditorCommand } from '../models';
+import UndoIcon from '@mui/icons-material/Undo';
+import RedoIcon from '@mui/icons-material/Redo';
+import { EditorState } from 'prosemirror-state';
+import { Command } from 'prosemirror-state';
+import {
+  toggleBold,
+  toggleItalic,
+  toggleUnderline,
+  toggleStrikethrough,
+  toggleCode,
+  toggleBlockquote,
+  toggleBulletList,
+  toggleOrderedList,
+  setHeading,
+  setParagraph,
+  setCodeBlock,
+  addLink,
+  insertImage,
+  insertHorizontalRule,
+} from '../commands';
+import { undo, redo } from 'prosemirror-history';
 
 const ToolbarRoot = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -48,103 +69,148 @@ export interface EditorToolbarProps {
   className?: string;
   disabled?: boolean;
   config?: any;
-  onCommand: (command: EditorCommand) => void;
-  editorState: any;
+  executeCommand: (command: Command) => void;
+  editorState: EditorState | null;
 }
 
-export const EditorToolbar: React.FC<EditorToolbarProps> = ({
+export const EditorToolbar: React.FC<EditorToolbarProps> = React.memo(({
   className,
   disabled,
   config,
-  onCommand,
+  executeCommand,
   editorState,
 }) => {
-  const [formats, setFormats] = React.useState<string[]>([]);
-  const [alignment, setAlignment] = React.useState<string>('left');
-
-  const handleFormat = (
-    event: React.MouseEvent<HTMLElement>,
-    newFormats: string[],
-  ) => {
-    setFormats(newFormats);
-    // Handle format changes
-    newFormats.forEach((format) => {
-      onCommand({ type: 'format', payload: format });
-    });
+  // Check which marks are active
+  const getActiveMarks = () => {
+    if (!editorState) return [];
+    const marks: string[] = [];
+    const { marks: schemaMarks } = editorState.schema;
+    
+    if (schemaMarks.bold && schemaMarks.bold.isInSet(editorState.storedMarks || editorState.selection.$from.marks())) {
+      marks.push('bold');
+    }
+    if (schemaMarks.italic && schemaMarks.italic.isInSet(editorState.storedMarks || editorState.selection.$from.marks())) {
+      marks.push('italic');
+    }
+    if (schemaMarks.underline && schemaMarks.underline.isInSet(editorState.storedMarks || editorState.selection.$from.marks())) {
+      marks.push('underline');
+    }
+    if (schemaMarks.strikethrough && schemaMarks.strikethrough.isInSet(editorState.storedMarks || editorState.selection.$from.marks())) {
+      marks.push('strikethrough');
+    }
+    if (schemaMarks.code && schemaMarks.code.isInSet(editorState.storedMarks || editorState.selection.$from.marks())) {
+      marks.push('code');
+    }
+    
+    return marks;
   };
 
-  const handleAlignment = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string,
-  ) => {
-    if (newAlignment !== null) {
-      setAlignment(newAlignment);
-      onCommand({ type: 'align', payload: newAlignment });
+  const activeMarks = getActiveMarks();
+
+  const handleFormatClick = (format: string, command: Command) => {
+    executeCommand(command);
+  };
+
+  const handleLinkClick = () => {
+    const url = prompt('Enter URL:');
+    if (url) {
+      executeCommand(addLink(url));
+    }
+  };
+
+  const handleImageClick = () => {
+    const url = prompt('Enter image URL:');
+    if (url) {
+      executeCommand(insertImage(url));
     }
   };
 
   return (
     <ToolbarRoot className={className}>
+      {/* Undo/Redo */}
       <StyledToggleButtonGroup
         size="small"
-        value={formats}
-        onChange={handleFormat}
+        aria-label="history"
+        disabled={disabled}
+      >
+        <ToggleButton value="undo" aria-label="undo" onClick={() => executeCommand(undo)}>
+          <UndoIcon fontSize="small" />
+        </ToggleButton>
+        <ToggleButton value="redo" aria-label="redo" onClick={() => executeCommand(redo)}>
+          <RedoIcon fontSize="small" />
+        </ToggleButton>
+      </StyledToggleButtonGroup>
+
+      <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
+
+      {/* Text Formatting */}
+      <StyledToggleButtonGroup
+        size="small"
+        value={activeMarks}
         aria-label="text formatting"
         disabled={disabled}
       >
-        <ToggleButton value="bold" aria-label="bold">
+        <ToggleButton
+          value="bold"
+          aria-label="bold"
+          selected={activeMarks.includes('bold')}
+          onClick={() => handleFormatClick('bold', toggleBold())}
+        >
           <FormatBoldIcon fontSize="small" />
         </ToggleButton>
-        <ToggleButton value="italic" aria-label="italic">
+        <ToggleButton
+          value="italic"
+          aria-label="italic"
+          selected={activeMarks.includes('italic')}
+          onClick={() => handleFormatClick('italic', toggleItalic())}
+        >
           <FormatItalicIcon fontSize="small" />
         </ToggleButton>
-        <ToggleButton value="underlined" aria-label="underlined">
+        <ToggleButton
+          value="underline"
+          aria-label="underline"
+          selected={activeMarks.includes('underline')}
+          onClick={() => handleFormatClick('underline', toggleUnderline())}
+        >
           <FormatUnderlinedIcon fontSize="small" />
         </ToggleButton>
-      </StyledToggleButtonGroup>
-
-      <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
-
-      <StyledToggleButtonGroup
-        size="small"
-        value={alignment}
-        exclusive
-        onChange={handleAlignment}
-        aria-label="text alignment"
-        disabled={disabled}
-      >
-        <ToggleButton value="left" aria-label="left aligned">
-          <FormatAlignLeftIcon fontSize="small" />
+        <ToggleButton
+          value="strikethrough"
+          aria-label="strikethrough"
+          selected={activeMarks.includes('strikethrough')}
+          onClick={() => handleFormatClick('strikethrough', toggleStrikethrough())}
+        >
+          <StrikethroughSIcon fontSize="small" />
         </ToggleButton>
-        <ToggleButton value="center" aria-label="centered">
-          <FormatAlignCenterIcon fontSize="small" />
-        </ToggleButton>
-        <ToggleButton value="right" aria-label="right aligned">
-          <FormatAlignRightIcon fontSize="small" />
-        </ToggleButton>
-        <ToggleButton value="justify" aria-label="justified">
-          <FormatAlignJustifyIcon fontSize="small" />
+        <ToggleButton
+          value="code"
+          aria-label="inline code"
+          selected={activeMarks.includes('code')}
+          onClick={() => handleFormatClick('code', toggleCode())}
+        >
+          <CodeIcon fontSize="small" />
         </ToggleButton>
       </StyledToggleButtonGroup>
 
       <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
 
+      {/* Lists */}
       <StyledToggleButtonGroup
         size="small"
-        aria-label="text formatting"
+        aria-label="lists"
         disabled={disabled}
       >
         <ToggleButton
           value="list-bullet"
           aria-label="bulleted list"
-          onClick={() => onCommand({ type: 'list', payload: 'bullet' })}
+          onClick={() => executeCommand(toggleBulletList())}
         >
           <FormatListBulletedIcon fontSize="small" />
         </ToggleButton>
         <ToggleButton
           value="list-numbered"
           aria-label="numbered list"
-          onClick={() => onCommand({ type: 'list', payload: 'numbered' })}
+          onClick={() => executeCommand(toggleOrderedList())}
         >
           <FormatListNumberedIcon fontSize="small" />
         </ToggleButton>
@@ -152,6 +218,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
       <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
 
+      {/* Blocks and Inserts */}
       <StyledToggleButtonGroup
         size="small"
         aria-label="insert"
@@ -160,32 +227,25 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
         <ToggleButton
           value="quote"
           aria-label="quote"
-          onClick={() => onCommand({ type: 'block', payload: 'quote' })}
+          onClick={() => executeCommand(toggleBlockquote())}
         >
           <FormatQuoteIcon fontSize="small" />
         </ToggleButton>
         <ToggleButton
-          value="code"
-          aria-label="code"
-          onClick={() => onCommand({ type: 'block', payload: 'code' })}
-        >
-          <CodeIcon fontSize="small" />
-        </ToggleButton>
-        <ToggleButton
           value="link"
           aria-label="link"
-          onClick={() => onCommand({ type: 'insert', payload: 'link' })}
+          onClick={handleLinkClick}
         >
           <LinkIcon fontSize="small" />
         </ToggleButton>
         <ToggleButton
           value="image"
           aria-label="image"
-          onClick={() => onCommand({ type: 'insert', payload: 'image' })}
+          onClick={handleImageClick}
         >
           <ImageIcon fontSize="small" />
         </ToggleButton>
       </StyledToggleButtonGroup>
     </ToolbarRoot>
   );
-};
+});

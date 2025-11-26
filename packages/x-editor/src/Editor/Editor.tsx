@@ -2,9 +2,9 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { styled, useTheme } from '@mui/material/styles';
 import { unstable_composeClasses as composeClasses } from '@mui/utils';
-import { useEditor } from '../hooks/useEditor';
+import { useProseMirror } from '../hooks/useProseMirror';
 import { EditorToolbar } from './EditorToolbar';
-import { EditorContent } from './EditorContent';
+import { ProseMirrorView } from './ProseMirrorView';
 import { EditorProps } from '../models';
 import { getEditorUtilityClass } from './editorClasses';
 
@@ -55,15 +55,21 @@ const Editor = React.forwardRef<HTMLDivElement, EditorProps>(function Editor(
     maxHeight,
     className,
     sx,
+    onFocus,
+    onBlur,
     ...other
   } = props;
 
   const theme = useTheme();
   const classes = useUtilityClasses(props);
-  const { editorState, handleChange, executeCommand } = useEditor({
+  const { editorView, editorState, executeCommand } = useProseMirror({
     value,
     defaultValue,
     onChange,
+    placeholder,
+    readOnly: readOnly || disabled,
+    onFocus,
+    onBlur,
   });
 
   return (
@@ -83,17 +89,13 @@ const Editor = React.forwardRef<HTMLDivElement, EditorProps>(function Editor(
           className={classes.toolbar}
           disabled={disabled || readOnly}
           config={toolbarConfig}
-          onCommand={executeCommand}
+          executeCommand={executeCommand}
           editorState={editorState}
         />
       )}
-      <EditorContent
+      <ProseMirrorView
         className={classes.content}
-        value={editorState.content}
-        onChange={handleChange}
-        placeholder={placeholder}
-        disabled={disabled}
-        readOnly={readOnly}
+        editorView={editorView}
       />
     </EditorRoot>
   );
