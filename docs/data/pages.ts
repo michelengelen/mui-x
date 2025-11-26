@@ -3,6 +3,7 @@ import chartsComponentApi from './chartsApiPages';
 import dataGridComponentApi from './dataGridApiPages';
 import pickersComponentApi from './datePickersApiPages';
 import treeViewComponentApi from './treeViewApiPages';
+import editorComponentApi from './editor-component-api-pages';
 
 const pages: MuiPage[] = [
   {
@@ -734,13 +735,31 @@ const pages: MuiPage[] = [
             title: 'API reference',
             children: [...treeViewComponentApi],
           },
+       ],
+     },
+   ],
+ },
+  {
+    pathname: '/x/react-editor-group',
+    title: 'Editor',
+    children: [
+      { pathname: '/x/react-editor', title: 'Overview' },
+      {
+        pathname: '/x/api/editor-resources',
+        subheader: 'Resources',
+        children: [
+          {
+            pathname: '/x/api/editor-group',
+            title: 'API reference',
+            children: [...editorComponentApi],
+          },
         ],
       },
     ],
   },
-  {
-    pathname: '/x/migration-group',
-    title: 'Migration',
+ {
+   pathname: '/x/migration-group',
+   title: 'Migration',
     children: [
       {
         pathname: '/x/migration-v8',
