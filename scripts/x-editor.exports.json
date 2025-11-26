@@ -1,0 +1,14 @@
+[
+  { "name": "Editor", "kind": "Variable" },
+  { "name": "EditorProps", "kind": "Interface" },
+  { "name": "EditorSlots", "kind": "Interface" },
+  { "name": "EditorSlotProps", "kind": "Interface" },
+  { "name": "useProseMirror", "kind": "Function" },
+  { "name": "ProseMirrorContext", "kind": "Variable" },
+  { "name": "ProseMirrorProvider", "kind": "Function" },
+  { "name": "schema", "kind": "Variable" },
+  { "name": "commands", "kind": "Variable" },
+  { "name": "plugins", "kind": "Variable" },
+  { "name": "getEditorLocaleText", "kind": "Function" },
+  { "name": "enUS", "kind": "Variable" }
+]
