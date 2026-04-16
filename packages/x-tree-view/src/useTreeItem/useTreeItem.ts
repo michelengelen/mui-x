@@ -224,6 +224,7 @@ export const useTreeItem = <TStore extends TreeViewAnyStore = DefaultStore>(
       id: idAttribute,
       'aria-expanded': status.expandable ? status.expanded : undefined,
       'aria-disabled': status.disabled || undefined,
+      'data-depth': depth,
       ...externalProps,
       style: {
         ...(externalProps.style ?? {}),

@@ -14,7 +14,7 @@ const deriveStateFromParameters = (parameters: RichTreeViewProStoreParameters<an
   isItemReorderable: parameters.itemsReordering
     ? (parameters.isItemReorderable ?? DEFAULT_IS_ITEM_REORDERABLE_WHEN_ENABLED)
     : DEFAULT_IS_ITEM_REORDERABLE_WHEN_DISABLED,
-  domStructure: parameters.domStructure ?? 'flat',
+  domStructure: parameters.domStructure ?? (parameters.disableVirtualization ? 'nested' : 'flat'),
   virtualization: !(parameters.disableVirtualization ?? false),
   itemHeight: parameters.itemHeight === undefined ? DEFAULT_ITEM_HEIGHT : parameters.itemHeight,
 });

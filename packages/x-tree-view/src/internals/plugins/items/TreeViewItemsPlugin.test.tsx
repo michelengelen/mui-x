@@ -614,22 +614,24 @@ Two items were provided with the same id in the \`items\` prop: "1"`,
       );
 
       it.skipIf(treeViewComponentName !== 'RichTreeViewPro')(
-        'should use flat DOM structure by default on RichTreeViewPro (children as siblings)',
+        'should use nested DOM structure by default on RichTreeViewPro when virtualization is disabled',
         () => {
           const view = render({
             items: [{ id: '1', children: [{ id: '1.1' }] }],
             defaultExpandedItems: ['1'],
+            // disableVirtualization is passed by the test renderer helper
+            // so this tests the default domStructure when virtualization is disabled
           });
 
           const parentRoot = view.getItemRoot('1');
           const childRoot = view.getItemRoot('1.1');
 
-          // In flat DOM structure, the child is NOT a descendant of the parent
-          expect(parentRoot.contains(childRoot)).to.equal(false);
-          // Both items should be siblings (same parent)
-          expect(parentRoot.parentElement).to.equal(childRoot.parentElement);
+          // When virtualization is disabled, the default domStructure is 'nested'
+          // so the child IS a descendant of the parent (same as RichTreeView)
+          expect(parentRoot.contains(childRoot)).to.equal(true);
         },
       );
+
 
       it.skipIf(!isRichTreeView)(
         'should use flat DOM structure when domStructure="flat" (children as siblings)',

@@ -48,7 +48,7 @@ export const RichTreeViewItem = React.memo(function RichTreeViewItem({
 
   return (
     <Item {...itemProps}>
-      {renderItemForRichTreeView ? children?.map(renderItemForRichTreeView) : null}
+      {skipChildren || !renderItemForRichTreeView ? null : children?.map(renderItemForRichTreeView)}
     </Item>
   );
 }, fastObjectShallowCompare);
