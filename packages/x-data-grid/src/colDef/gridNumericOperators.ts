@@ -1,5 +1,6 @@
 import { GridFilterInputValue } from '../components/panel/filterPanel/GridFilterInputValue';
 import { GridFilterInputMultipleValue } from '../components/panel/filterPanel/GridFilterInputMultipleValue';
+import { GridFilterInputValueRange } from '../components/panel/filterPanel/GridFilterInputValueRange';
 import type { GridFilterOperator } from '../models/gridFilterOperator';
 import type { GridFilterInputValueProps } from '../models/gridFilterInputComponent';
 import type { GetApplyQuickFilterFn } from '../models/colDef/gridColDef';
@@ -160,6 +161,56 @@ export const getGridNumericOperators = (): GridFilterOperator<
       };
     },
     InputComponent: GridFilterInputMultipleValue,
+    InputComponentProps: { type: 'number' },
+  },
+  {
+    value: 'between',
+    getApplyFilterFn: (filterItem) => {
+      if (
+        !Array.isArray(filterItem.value) ||
+        filterItem.value[0] == null ||
+        filterItem.value[1] == null
+      ) {
+        return null;
+      }
+      const [min, max] = filterItem.value.map(Number);
+      if (Number.isNaN(min) || Number.isNaN(max)) {
+        return null;
+      }
+      return (value): boolean => {
+        if (value == null) {
+          return false;
+        }
+        const numValue = parseNumericValue(value)!;
+        return numValue >= min && numValue <= max;
+      };
+    },
+    InputComponent: GridFilterInputValueRange,
+    InputComponentProps: { type: 'number' },
+  },
+  {
+    value: 'notBetween',
+    getApplyFilterFn: (filterItem) => {
+      if (
+        !Array.isArray(filterItem.value) ||
+        filterItem.value[0] == null ||
+        filterItem.value[1] == null
+      ) {
+        return null;
+      }
+      const [min, max] = filterItem.value.map(Number);
+      if (Number.isNaN(min) || Number.isNaN(max)) {
+        return null;
+      }
+      return (value): boolean => {
+        if (value == null) {
+          return false;
+        }
+        const numValue = parseNumericValue(value)!;
+        return numValue < min || numValue > max;
+      };
+    },
+    InputComponent: GridFilterInputValueRange,
     InputComponentProps: { type: 'number' },
   },
 ];

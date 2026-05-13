@@ -718,6 +718,36 @@ describe('<DataGrid /> - Filter', () => {
       expect(getRows({ operator: 'isAnyOf', value: undefined })).to.deep.equal(ALL_ROWS);
     });
 
+    it('should filter with operator "between"', () => {
+      expect(getRows({ operator: 'between', value: [1954, 1974] })).to.deep.equal([
+        '1954',
+        '1974',
+      ]);
+      expect(getRows({ operator: 'between', value: [1954, 1984] })).to.deep.equal([
+        '1954',
+        '1974',
+        '1984',
+      ]);
+      expect(getRows({ operator: 'between', value: [0, 0] })).to.deep.equal(['', '0']);
+      // Incomplete range returns all rows
+      expect(getRows({ operator: 'between', value: [1954, undefined] })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'between', value: [undefined, 1984] })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'between', value: undefined })).to.deep.equal(ALL_ROWS);
+    });
+
+    it('should filter with operator "notBetween"', () => {
+      expect(getRows({ operator: 'notBetween', value: [1954, 1974] })).to.deep.equal(['1984']);
+      expect(getRows({ operator: 'notBetween', value: [1954, 1984] })).to.deep.equal([]);
+      expect(getRows({ operator: 'notBetween', value: [1975, 1983] })).to.deep.equal([
+        '1954',
+        '1984',
+      ]);
+      // Incomplete range returns all rows
+      expect(getRows({ operator: 'notBetween', value: [1954, undefined] })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'notBetween', value: [undefined, 1984] })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'notBetween', value: undefined })).to.deep.equal(ALL_ROWS);
+    });
+
     it('should filter with operator "isEmpty"', () => {
       expect(getRows({ operator: 'isEmpty' })).to.deep.equal(['', '']);
     });
