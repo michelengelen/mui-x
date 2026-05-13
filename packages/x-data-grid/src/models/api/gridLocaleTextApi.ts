@@ -96,6 +96,8 @@ export interface GridLocaleText {
   'filterOperator>=': string;
   'filterOperator<': string;
   'filterOperator<=': string;
+  filterOperatorBetween: string;
+  filterOperatorNotBetween: string;
 
   // Header filter operators text
   headerFilterOperatorContains: string;
@@ -119,6 +121,8 @@ export interface GridLocaleText {
   'headerFilterOperator>=': string;
   'headerFilterOperator<': string;
   'headerFilterOperator<=': string;
+  headerFilterOperatorBetween: string;
+  headerFilterOperatorNotBetween: string;
   headerFilterClear: string;
 
   // Filter values text

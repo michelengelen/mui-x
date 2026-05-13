@@ -96,6 +96,8 @@ export const GRID_DEFAULT_LOCALE_TEXT: GridLocaleText = {
   'filterOperator>=': '>=',
   'filterOperator<': '<',
   'filterOperator<=': '<=',
+  filterOperatorBetween: 'between',
+  filterOperatorNotBetween: 'not between',
 
   // Header filter operators text
   headerFilterOperatorContains: 'Contains',
@@ -119,6 +121,8 @@ export const GRID_DEFAULT_LOCALE_TEXT: GridLocaleText = {
   'headerFilterOperator>=': 'Greater than or equal to',
   'headerFilterOperator<': 'Less than',
   'headerFilterOperator<=': 'Less than or equal to',
+  headerFilterOperatorBetween: 'Between',
+  headerFilterOperatorNotBetween: 'Not between',
   headerFilterClear: 'Clear filter',
 
   // Filter values text
