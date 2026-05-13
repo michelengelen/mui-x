@@ -1,6 +1,8 @@
 export * from './GridFilterForm';
 export { GridFilterInputValue, type GridTypeFilterInputValueProps } from './GridFilterInputValue';
 export * from './GridFilterInputDate';
+export { GridFilterInputDateRange } from './GridFilterInputDateRange';
+export type { GridFilterInputDateRangeProps } from './GridFilterInputDateRange';
 export * from './GridFilterInputSingleSelect';
 export { GridFilterInputBoolean } from './GridFilterInputBoolean';
 export type { GridFilterInputBooleanProps } from './GridFilterInputBoolean';

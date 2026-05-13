@@ -896,6 +896,66 @@ describe('<DataGrid /> - Filter', () => {
         '1/1/2002, 12:00:00 AM',
       ]);
     });
+
+    it('should filter with operator "between"', () => {
+      expect(getRows({ operator: 'between', value: ['2001-01-01', '2001-12-31'] })).to.deep.equal([
+        '1/1/2001, 12:00:00 AM',
+        '1/1/2001, 8:30:00 AM',
+      ]);
+      expect(getRows({ operator: 'between', value: ['2000-01-01', '2001-12-31'] })).to.deep.equal([
+        '1/1/2000, 12:00:00 AM',
+        '1/1/2001, 12:00:00 AM',
+        '1/1/2001, 8:30:00 AM',
+      ]);
+      // Incomplete range returns all rows
+      expect(getRows({ operator: 'between', value: ['2001-01-01', null] })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'between', value: [null, '2001-12-31'] })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'between', value: undefined })).to.deep.equal(ALL_ROWS);
+    });
+
+    it('should filter with operator "notBetween"', () => {
+      expect(
+        getRows({ operator: 'notBetween', value: ['2001-01-01', '2001-12-31'] }),
+      ).to.deep.equal([
+        '',
+        '1/1/2000, 12:00:00 AM',
+        '1/1/2002, 12:00:00 AM',
+      ]);
+      expect(
+        getRows({ operator: 'notBetween', value: ['2000-01-01', '2002-12-31'] }),
+      ).to.deep.equal(['']);
+      // Incomplete range returns all rows
+      expect(
+        getRows({ operator: 'notBetween', value: ['2001-01-01', null] }),
+      ).to.deep.equal(ALL_ROWS);
+      expect(
+        getRows({ operator: 'notBetween', value: [null, '2001-12-31'] }),
+      ).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'notBetween', value: undefined })).to.deep.equal(ALL_ROWS);
+    });
+
+    it('should filter with operator "in"', () => {
+      expect(
+        getRows({ operator: 'in', value: ['2001-01-01', '2002-01-01'] }),
+      ).to.deep.equal([
+        '1/1/2001, 12:00:00 AM',
+        '1/1/2001, 8:30:00 AM',
+        '1/1/2002, 12:00:00 AM',
+      ]);
+      expect(getRows({ operator: 'in', value: [] })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'in', value: undefined })).to.deep.equal(ALL_ROWS);
+    });
+
+    it('should filter with operator "notIn"', () => {
+      expect(
+        getRows({ operator: 'notIn', value: ['2001-01-01', '2002-01-01'] }),
+      ).to.deep.equal([
+        '',
+        '1/1/2000, 12:00:00 AM',
+      ]);
+      expect(getRows({ operator: 'notIn', value: [] })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'notIn', value: undefined })).to.deep.equal(ALL_ROWS);
+    });
   });
 
   describe('column type: dateTime', () => {

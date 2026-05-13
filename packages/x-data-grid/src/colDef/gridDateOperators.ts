@@ -2,6 +2,8 @@ import {
   GridFilterInputDate,
   type GridFilterInputDateProps,
 } from '../components/panel/filterPanel/GridFilterInputDate';
+import { GridFilterInputDateRange } from '../components/panel/filterPanel/GridFilterInputDateRange';
+import { GridFilterInputMultipleValue } from '../components/panel/filterPanel/GridFilterInputMultipleValue';
 import type { GridFilterItem } from '../models/gridFilterItem';
 import type { GridFilterOperator, GetApplyFilterFn } from '../models/gridFilterOperator';
 
@@ -133,5 +135,159 @@ export const getGridDateOperators = (
       };
     },
     requiresFilterValue: false,
+  },
+  {
+    value: 'between',
+    getApplyFilterFn: (filterItem) => {
+      if (
+        !Array.isArray(filterItem.value) ||
+        filterItem.value[0] == null ||
+        filterItem.value[1] == null
+      ) {
+        return null;
+      }
+      const startDate = new Date(filterItem.value[0]);
+      const endDate = new Date(filterItem.value[1]);
+      if (showTime) {
+        startDate.setSeconds(0, 0);
+        endDate.setSeconds(0, 0);
+      } else {
+        startDate.setMinutes(startDate.getMinutes() + startDate.getTimezoneOffset());
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset());
+        endDate.setHours(0, 0, 0, 0);
+      }
+      const startTime = startDate.getTime();
+      const endTime = endDate.getTime();
+      return (value: Date): boolean => {
+        if (!value) {
+          return false;
+        }
+        const dateCopy = new Date(value);
+        if (showTime) {
+          dateCopy.setSeconds(0, 0);
+        } else {
+          dateCopy.setHours(0, 0, 0, 0);
+        }
+        const t = dateCopy.getTime();
+        return t >= startTime && t <= endTime;
+      };
+    },
+    InputComponent: GridFilterInputDateRange,
+    InputComponentProps: { type: showTime ? 'datetime-local' : 'date' },
+  },
+  {
+    value: 'notBetween',
+    getApplyFilterFn: (filterItem) => {
+      if (
+        !Array.isArray(filterItem.value) ||
+        filterItem.value[0] == null ||
+        filterItem.value[1] == null
+      ) {
+        return null;
+      }
+      const startDate = new Date(filterItem.value[0]);
+      const endDate = new Date(filterItem.value[1]);
+      if (showTime) {
+        startDate.setSeconds(0, 0);
+        endDate.setSeconds(0, 0);
+      } else {
+        startDate.setMinutes(startDate.getMinutes() + startDate.getTimezoneOffset());
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset());
+        endDate.setHours(0, 0, 0, 0);
+      }
+      const startTime = startDate.getTime();
+      const endTime = endDate.getTime();
+      return (value: Date): boolean => {
+        if (!value) {
+          return false;
+        }
+        const dateCopy = new Date(value);
+        if (showTime) {
+          dateCopy.setSeconds(0, 0);
+        } else {
+          dateCopy.setHours(0, 0, 0, 0);
+        }
+        const t = dateCopy.getTime();
+        return t < startTime || t > endTime;
+      };
+    },
+    InputComponent: GridFilterInputDateRange,
+    InputComponentProps: { type: showTime ? 'datetime-local' : 'date' },
+  },
+  {
+    value: 'in',
+    getApplyFilterFn: (filterItem) => {
+      if (!Array.isArray(filterItem.value) || filterItem.value.length === 0) {
+        return null;
+      }
+      const filterDates = filterItem.value
+        .filter(Boolean)
+        .map((v: string) => {
+          const d = new Date(v);
+          if (showTime) {
+            d.setSeconds(0, 0);
+          } else {
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+            d.setHours(0, 0, 0, 0);
+          }
+          return d.getTime();
+        });
+      if (filterDates.length === 0) {
+        return null;
+      }
+      return (value: Date): boolean => {
+        if (!value) {
+          return false;
+        }
+        const dateCopy = new Date(value);
+        if (showTime) {
+          dateCopy.setSeconds(0, 0);
+        } else {
+          dateCopy.setHours(0, 0, 0, 0);
+        }
+        return filterDates.includes(dateCopy.getTime());
+      };
+    },
+    InputComponent: GridFilterInputMultipleValue,
+    InputComponentProps: { type: showTime ? 'datetime-local' : 'date' },
+  },
+  {
+    value: 'notIn',
+    getApplyFilterFn: (filterItem) => {
+      if (!Array.isArray(filterItem.value) || filterItem.value.length === 0) {
+        return null;
+      }
+      const filterDates = filterItem.value
+        .filter(Boolean)
+        .map((v: string) => {
+          const d = new Date(v);
+          if (showTime) {
+            d.setSeconds(0, 0);
+          } else {
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+            d.setHours(0, 0, 0, 0);
+          }
+          return d.getTime();
+        });
+      if (filterDates.length === 0) {
+        return null;
+      }
+      return (value: Date): boolean => {
+        if (!value) {
+          return false;
+        }
+        const dateCopy = new Date(value);
+        if (showTime) {
+          dateCopy.setSeconds(0, 0);
+        } else {
+          dateCopy.setHours(0, 0, 0, 0);
+        }
+        return !filterDates.includes(dateCopy.getTime());
+      };
+    },
+    InputComponent: GridFilterInputMultipleValue,
+    InputComponentProps: { type: showTime ? 'datetime-local' : 'date' },
   },
 ];
