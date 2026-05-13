@@ -53,6 +53,38 @@ const createEqualityFilterFn =
     };
   };
 
+const createStartsWithFilterFn =
+  (disableTrim: boolean, negate: boolean) => (filterItem: GridFilterItem) => {
+    if (!filterItem.value) {
+      return null;
+    }
+    const filterItemValue = disableTrim ? filterItem.value : filterItem.value.trim();
+    const filterRegex = new RegExp(`^${escapeRegExp(filterItemValue)}.*$`, 'i');
+    return (value: any): boolean => {
+      if (value == null) {
+        return negate;
+      }
+      const matches = filterRegex.test(value.toString());
+      return negate ? !matches : matches;
+    };
+  };
+
+const createEndsWithFilterFn =
+  (disableTrim: boolean, negate: boolean) => (filterItem: GridFilterItem) => {
+    if (!filterItem.value) {
+      return null;
+    }
+    const filterItemValue = disableTrim ? filterItem.value : filterItem.value.trim();
+    const filterRegex = new RegExp(`.*${escapeRegExp(filterItemValue)}$`, 'i');
+    return (value: any): boolean => {
+      if (value == null) {
+        return negate;
+      }
+      const matches = filterRegex.test(value.toString());
+      return negate ? !matches : matches;
+    };
+  };
+
 const createEmptyFilterFn = (negate: boolean) => () => {
   return (value: any): boolean => {
     const isEmpty = value === '' || value == null;
@@ -85,32 +117,22 @@ export const getGridStringOperators = (
   },
   {
     value: 'startsWith',
-    getApplyFilterFn: (filterItem: GridFilterItem) => {
-      if (!filterItem.value) {
-        return null;
-      }
-      const filterItemValue = disableTrim ? filterItem.value : filterItem.value.trim();
-
-      const filterRegex = new RegExp(`^${escapeRegExp(filterItemValue)}.*$`, 'i');
-      return (value): boolean => {
-        return value != null ? filterRegex.test(value.toString()) : false;
-      };
-    },
+    getApplyFilterFn: createStartsWithFilterFn(disableTrim, false),
+    InputComponent: GridFilterInputValue,
+  },
+  {
+    value: 'doesNotStartWith',
+    getApplyFilterFn: createStartsWithFilterFn(disableTrim, true),
     InputComponent: GridFilterInputValue,
   },
   {
     value: 'endsWith',
-    getApplyFilterFn: (filterItem: GridFilterItem) => {
-      if (!filterItem.value) {
-        return null;
-      }
-      const filterItemValue = disableTrim ? filterItem.value : filterItem.value.trim();
-
-      const filterRegex = new RegExp(`.*${escapeRegExp(filterItemValue)}$`, 'i');
-      return (value): boolean => {
-        return value != null ? filterRegex.test(value.toString()) : false;
-      };
-    },
+    getApplyFilterFn: createEndsWithFilterFn(disableTrim, false),
+    InputComponent: GridFilterInputValue,
+  },
+  {
+    value: 'doesNotEndWith',
+    getApplyFilterFn: createEndsWithFilterFn(disableTrim, true),
     InputComponent: GridFilterInputValue,
   },
   {

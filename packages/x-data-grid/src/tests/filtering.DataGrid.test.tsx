@@ -509,6 +509,37 @@ describe('<DataGrid /> - Filter', () => {
       expect(getRows({ operator: 'contains', value: 'France (' })).to.deep.equal(['France (fr)']);
     });
 
+    it('should filter with operator "doesNotStartWith"', () => {
+      expect(getRows({ operator: 'doesNotStartWith', value: 'Fra' })).to.deep.equal([
+        'Germany',
+        '0',
+        '1',
+      ]);
+
+      // Trim value
+      expect(getRows({ operator: 'doesNotStartWith', value: ' Fra ' })).to.deep.equal([
+        'Germany',
+        '0',
+        '1',
+      ]);
+
+      // Case-insensitive
+      expect(getRows({ operator: 'doesNotStartWith', value: 'fra' })).to.deep.equal([
+        'Germany',
+        '0',
+        '1',
+      ]);
+
+      // Empty values
+      expect(getRows({ operator: 'doesNotStartWith', value: undefined })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'doesNotStartWith', value: '' })).to.deep.equal(ALL_ROWS);
+
+      // Value with regexp special literal
+      expect(
+        getRows({ operator: 'doesNotStartWith', value: '[-[]{}()*+?.,\\^$|#s]' }),
+      ).to.deep.equal(ALL_ROWS);
+    });
+
     it('should filter with operator "endsWith"', () => {
       expect(getRows({ operator: 'endsWith', value: 'many' })).to.deep.equal(['Germany']);
 
@@ -526,6 +557,30 @@ describe('<DataGrid /> - Filter', () => {
       // Value with regexp special literal
       expect(getRows({ operator: 'endsWith', value: '[-[]{}()*+?.,\\^$|#s]' })).to.deep.equal([]);
       expect(getRows({ operator: 'contains', value: '(fr)' })).to.deep.equal(['France (fr)']);
+    });
+
+    it('should filter with operator "doesNotEndWith"', () => {
+      expect(getRows({ operator: 'doesNotEndWith', value: 'many' })).to.deep.equal([
+        'France (fr)',
+        '0',
+        '1',
+      ]);
+
+      // Trim value
+      expect(getRows({ operator: 'doesNotEndWith', value: ' many ' })).to.deep.equal([
+        'France (fr)',
+        '0',
+        '1',
+      ]);
+
+      // Empty values
+      expect(getRows({ operator: 'doesNotEndWith', value: undefined })).to.deep.equal(ALL_ROWS);
+      expect(getRows({ operator: 'doesNotEndWith', value: '' })).to.deep.equal(ALL_ROWS);
+
+      // Value with regexp special literal
+      expect(
+        getRows({ operator: 'doesNotEndWith', value: '[-[]{}()*+?.,\\^$|#s]' }),
+      ).to.deep.equal(ALL_ROWS);
     });
 
     it('should filter with operator "isAnyOf"', () => {
