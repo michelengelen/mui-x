@@ -42,4 +42,15 @@ export const getGridSingleSelectOperators = (): GridFilterOperator[] => [
     },
     InputComponent: GridFilterInputMultipleSingleSelect,
   },
+  {
+    value: 'isNotAnyOf',
+    getApplyFilterFn: (filterItem) => {
+      if (!Array.isArray(filterItem.value) || filterItem.value.length === 0) {
+        return null;
+      }
+      const filterItemValues = filterItem.value.map(parseObjectValue);
+      return (value): boolean => !filterItemValues.includes(parseObjectValue(value));
+    },
+    InputComponent: GridFilterInputMultipleSingleSelect,
+  },
 ];
