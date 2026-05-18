@@ -103,6 +103,55 @@ You can use the `onFilterModelChange` prop to listen to changes to the filters a
 
 {{"demo": "ControlledFilters.js", "bg": "inline", "defaultCodeOpen": false}}
 
+## Built-in filter operators
+
+### Date and dateTime column operators
+
+The `date` and `dateTime` column types support the following operators:
+
+| Operator | Matches when... | Filter value |
+| :------- | :-------------- | :----------- |
+| `is` | The date equals the given date. | ISO date string |
+| `not` | The date does not equal the given date. | ISO date string |
+| `after` | The date is after the given date. | ISO date string |
+| `onOrAfter` | The date is on or after the given date. | ISO date string |
+| `before` | The date is before the given date. | ISO date string |
+| `onOrBefore` | The date is on or before the given date. | ISO date string |
+| `isEmpty` | The date is null or undefined. Requires no filter value. | — |
+| `isNotEmpty` | The date is not null or undefined. Requires no filter value. | — |
+| `between` | The date falls within the given range (start and end inclusive). | `[start, end]` ISO strings |
+| `notBetween` | The date falls outside the given range. | `[start, end]` ISO strings |
+| `in` | The date matches one of the given dates. | ISO string array |
+| `notIn` | The date does not match any of the given dates. | ISO string array |
+
+The `between` and `notBetween` operators require both bounds. The `in` and `notIn` operators require at least one date. All operators skip filtering when their value is empty or incomplete.
+
+```tsx
+// Filter rows where a date column falls within a year
+<DataGrid
+  initialState={{
+    filter: {
+      filterModel: {
+        items: [
+          { field: 'createdAt', operator: 'between', value: ['2024-01-01', '2024-12-31'] },
+        ],
+      },
+    },
+  }}
+/>
+
+// Filter rows where a date column matches a specific set of dates
+<DataGrid
+  initialState={{
+    filter: {
+      filterModel: {
+        items: [{ field: 'holiday', operator: 'in', value: ['2024-12-25', '2025-01-01'] }],
+      },
+    },
+  }}
+/>
+```
+
 ## Disable the filters
 
 ### For all columns
