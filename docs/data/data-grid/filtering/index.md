@@ -103,6 +103,40 @@ You can use the `onFilterModelChange` prop to listen to changes to the filters a
 
 {{"demo": "ControlledFilters.js", "bg": "inline", "defaultCodeOpen": false}}
 
+## Built-in filter operators
+
+### Number column operators
+
+The `number` column type supports the following operators:
+
+| Operator | Matches when... | Filter value |
+| :------- | :-------------- | :----------- |
+| `=` | The value equals the given number. | Single number |
+| `!=` | The value does not equal the given number. | Single number |
+| `>` | The value is greater than the given number. | Single number |
+| `>=` | The value is greater than or equal to the given number. | Single number |
+| `<` | The value is less than the given number. | Single number |
+| `<=` | The value is less than or equal to the given number. | Single number |
+| `isEmpty` | The value is null or undefined. Requires no filter value. | — |
+| `isNotEmpty` | The value is not null or undefined. Requires no filter value. | — |
+| `isAnyOf` | The value matches one of the numbers in the list. | Number array |
+| `between` | The value falls within the given range (inclusive). | `[min, max]` |
+| `notBetween` | The value falls outside the given range. | `[min, max]` |
+
+The `between` and `notBetween` operators require both bounds. When either bound is missing, the filter is skipped.
+
+```tsx
+<DataGrid
+  initialState={{
+    filter: {
+      filterModel: {
+        items: [{ field: 'quantity', operator: 'between', value: [10, 50] }],
+      },
+    },
+  }}
+/>
+```
+
 ## Disable the filters
 
 ### For all columns
