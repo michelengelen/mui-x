@@ -103,6 +103,35 @@ You can use the `onFilterModelChange` prop to listen to changes to the filters a
 
 {{"demo": "ControlledFilters.js", "bg": "inline", "defaultCodeOpen": false}}
 
+## Built-in filter operators
+
+### SingleSelect column operators
+
+The `singleSelect` column type supports the following operators:
+
+| Operator | Matches when... |
+| :------- | :-------------- |
+| `is` | The value equals the selected option. |
+| `not` | The value does not equal the selected option. |
+| `isAnyOf` | The value matches one of the selected options. |
+| `isNotAnyOf` | The value does not match any of the selected options. |
+
+The `isNotAnyOf` operator is the inverse of `isAnyOf`. When no options are selected, the filter is skipped and all rows are shown.
+
+```tsx
+<DataGrid
+  initialState={{
+    filter: {
+      filterModel: {
+        items: [
+          { field: 'status', operator: 'isNotAnyOf', value: ['Cancelled', 'Refunded'] },
+        ],
+      },
+    },
+  }}
+/>
+```
+
 ## Disable the filters
 
 ### For all columns
