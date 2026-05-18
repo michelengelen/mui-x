@@ -103,6 +103,40 @@ You can use the `onFilterModelChange` prop to listen to changes to the filters a
 
 {{"demo": "ControlledFilters.js", "bg": "inline", "defaultCodeOpen": false}}
 
+## Built-in filter operators
+
+### String column operators
+
+The `string` column type supports the following operators:
+
+| Operator | Matches when... |
+| :------- | :-------------- |
+| `contains` | The value contains the given string (case-insensitive). |
+| `doesNotContain` | The value does not contain the given string (case-insensitive). |
+| `equals` | The value exactly equals the given string (case-insensitive). |
+| `doesNotEqual` | The value does not equal the given string (case-insensitive). |
+| `startsWith` | The value begins with the given string (case-insensitive). |
+| `doesNotStartWith` | The value does not begin with the given string (case-insensitive). |
+| `endsWith` | The value ends with the given string (case-insensitive). |
+| `doesNotEndWith` | The value does not end with the given string (case-insensitive). |
+| `isEmpty` | The value is empty or null. Requires no filter value. |
+| `isNotEmpty` | The value is not empty or null. Requires no filter value. |
+| `isAnyOf` | The value matches one of the items in the list. |
+
+All string operators trim the filter value and treat an empty filter value as "no filter applied".
+
+```tsx
+<DataGrid
+  initialState={{
+    filter: {
+      filterModel: {
+        items: [{ field: 'name', operator: 'doesNotStartWith', value: 'Al' }],
+      },
+    },
+  }}
+/>
+```
+
 ## Disable the filters
 
 ### For all columns
