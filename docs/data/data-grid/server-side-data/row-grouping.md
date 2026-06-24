@@ -99,6 +99,11 @@ The cache is disabled to make all server requests visible in the console.
 
 {{"demo": "ServerSideRowGroupingExpansionPersistence.js", "bg": "inline"}}
 
+This ID-matching behavior isn't limited to manual refetches. It applies the same way when the Data Grid automatically refetches rows in response to a `sortModel` change.
+Expand some groups in the demo below, then sort a column: the expanded groups stay expanded because the rows returned for the new sort order still match the existing IDs.
+
+{{"demo": "ServerSideRowGroupingExpansionOnSort.js", "bg": "inline"}}
+
 ## Error handling
 
 If an error occurs during a `getRows()` call, the Data Grid displays an error indicator in the row group cell.

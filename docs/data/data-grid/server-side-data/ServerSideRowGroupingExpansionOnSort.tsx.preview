@@ -1,0 +1,7 @@
+<DataGridPremium
+  columns={columns}
+  dataSource={dataSource}
+  apiRef={apiRef}
+  initialState={initialState}
+  disablePivoting
+/>
