@@ -29,6 +29,7 @@ import {
   getActiveColumnHeader,
   grid,
   includeRowSelection,
+  excludeRowSelection,
 } from 'test/utils/helperFn';
 import { getBasicGridData } from '@mui/x-data-grid-generator';
 import { isJSDOM } from 'test/utils/skipIf';
@@ -965,6 +966,43 @@ describe('<DataGrid /> - Row selection', () => {
       expect(() => screen.getByText('3 rows selected')).not.to.throw();
       // The callback should not be called when the selection changes
       expect(onRowSelectionModelChange.getCalls()).to.have.length(0);
+    });
+
+    // Context: https://github.com/mui/mui-x/issues/23960
+    it('should not emit a change event when a row of an `exclude` model is removed', () => {
+      const data = getBasicGridData(4, 2);
+      const onRowSelectionModelChange = spy();
+
+      function ControlledGrid(props: Pick<DataGridProps, 'rows'>) {
+        const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>(
+          excludeRowSelection([1]),
+        );
+        return (
+          <TestDataGridSelection
+            columns={data.columns}
+            rows={props.rows}
+            // An inline `getRowId` processes the rows again on each render
+            getRowId={(row) => row.id}
+            checkboxSelection
+            rowSelectionModel={rowSelectionModel}
+            onRowSelectionModelChange={(model) => {
+              onRowSelectionModelChange(model);
+              setRowSelectionModel(model);
+            }}
+          />
+        );
+      }
+
+      const { setProps } = render(<ControlledGrid rows={data.rows} />);
+      // Without the fix, this causes an infinite update loop.
+      setProps({ rows: data.rows.filter((row) => row.id !== 1) });
+      expect(onRowSelectionModelChange.getCalls()).to.have.length(0);
+      expect(getSelectedRowIds()).to.deep.equal([0, 2, 3]);
+
+      // The model keeps the id, so the row stays deselected when it comes back.
+      setProps({ rows: data.rows });
+      expect(onRowSelectionModelChange.getCalls()).to.have.length(0);
+      expect(getSelectedRowIds()).to.deep.equal([0, 2, 3]);
     });
   });
 

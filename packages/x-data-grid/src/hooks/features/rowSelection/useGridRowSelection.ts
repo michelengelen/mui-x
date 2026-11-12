@@ -577,6 +577,11 @@ export const useGridRowSelection = (
 
     let hasChanged = false;
     for (const id of currentSelection.ids) {
+      // The ids of an `exclude` model are already unselected.
+      // Unselecting them again does not change the model, so it must not emit a change event.
+      if (!selectionManager.has(id)) {
+        continue;
+      }
       if (isNonExistent(id)) {
         if (props.keepNonExistentRowsSelected) {
           continue;
